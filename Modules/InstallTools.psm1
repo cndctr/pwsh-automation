@@ -176,7 +176,6 @@ function Install-MSOffice {
     #     [Parameter()]
     #     [string]$InstallerScript = $Settings.MSOffice.InstallerScript
     # )
-    $SoftPath = $Settings.SoftPath
     $ImageFile = $Settings.MSOffice.ImageFile
     $ConfigFile = $Settings.MSOffice.ConfigFile
     $InstallerScript = $Settings.MSOffice.InstallerScript
@@ -186,14 +185,14 @@ function Install-MSOffice {
         Write-Verbose -Message "Installing Office 2016 from $ImageFile" -Verbose
 
         # Mount the disk image
-        $ImagePath = Join-Path -Path $SoftPath -ChildPath $ImageFile
-        $diskImg = Mount-DiskImage -ImagePath $ImagePath -NoDriveLetter
+        # $ImagePath = Join-Path -Path $SoftPath -ChildPath $ImageFile
+        $diskImg = Mount-DiskImage -ImagePath $ImageFile -NoDriveLetter
         $volInfo = $diskImg | Get-Volume
         mountvol $DriveLetter $volInfo.UniqueId
 
         # Copy installation configuration and script
-        Copy-Item -Path (Join-Path -Path $SoftPath -ChildPath $ConfigFile) -Destination "$env:TEMP\C2R_Config.ini" -Force
-        Copy-Item -Path (Join-Path -Path $SoftPath -ChildPath $InstallerScript) -Destination "$env:TEMP\installer.cmd" -Force
+        Copy-Item -Path $ConfigFile -Destination "$env:TEMP\C2R_Config.ini" -Force
+        Copy-Item -Path $InstallerScript -Destination "$env:TEMP\installer.cmd" -Force
 
         # Start the installer
         Start-Process -FilePath "$env:TEMP\installer.cmd" -Wait
