@@ -69,7 +69,7 @@ function Send-SMS {
                 ttl        = $TTL
             }
         }
-    } | ConvertTo-Json
+    } | ConvertTo-Json -Depth 10
 
     # Send Request
     try {

@@ -14,6 +14,11 @@
         ConfigSourcePath = 'w:\soft\_utils\aspia\aspia-host-config.json'
         ConfigDestinationPath = 'C:\ProgramData\aspia\host.json' # Static path instead of $Env
     }
+    MSOffice = @{
+        ImageFile = 'w:\soft\ms_office\Office2016.img'
+        ConfigFile = 'w:\soft\ms_office\Office2016_basic.ini'
+        InstallerScript = 'w:\soft\ms_office\installer.cmd'
+    }
     DefenderExclusionPaths = @(
         'W:\soft',
         'D:\install',

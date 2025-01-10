@@ -157,6 +157,58 @@ function Install-NOD32 {
     }
 }
 
+function Install-MSOffice {
+
+    # [CmdletBinding()]
+    # param (
+    #     [Parameter()]
+    #     [string]$SoftPath = $Settings.SoftPath,
+
+    #     [Parameter()]
+    #     [string]$ImageFile = $Settings.MSOffice.ImageFile,
+
+    #     [Parameter()]
+    #     [string]$DriveLetter = "O:",
+
+    #     [Parameter()]
+    #     [string]$ConfigFile = $Settings.MSOffice.ConfigFile,
+
+    #     [Parameter()]
+    #     [string]$InstallerScript = $Settings.MSOffice.InstallerScript
+    # )
+    $SoftPath = $Settings.SoftPath
+    $ImageFile = $Settings.MSOffice.ImageFile
+    $ConfigFile = $Settings.MSOffice.ConfigFile
+    $InstallerScript = $Settings.MSOffice.InstallerScript
+    $DriveLetter = "O:"
+
+    try {
+        Write-Verbose -Message "Installing Office 2016 from $ImageFile" -Verbose
+
+        # Mount the disk image
+        $ImagePath = Join-Path -Path $SoftPath -ChildPath $ImageFile
+        $diskImg = Mount-DiskImage -ImagePath $ImagePath -NoDriveLetter
+        $volInfo = $diskImg | Get-Volume
+        mountvol $DriveLetter $volInfo.UniqueId
+
+        # Copy installation configuration and script
+        Copy-Item -Path (Join-Path -Path $SoftPath -ChildPath $ConfigFile) -Destination "$env:TEMP\C2R_Config.ini" -Force
+        Copy-Item -Path (Join-Path -Path $SoftPath -ChildPath $InstallerScript) -Destination "$env:TEMP\installer.cmd" -Force
+
+        # Start the installer
+        Start-Process -FilePath "$env:TEMP\installer.cmd" -Wait
+
+        # Unmount the disk image
+        Dismount-DiskImage -ImagePath $ImagePath
+
+        Write-Verbose -Message "Office 2016 installation completed successfully." -Verbose
+    } catch {
+        Write-Error -Message "Failed to install Office 2016. Error: $_"
+    }
+}
+
+
+
 
 function Get-ZoomVersion {
     <#

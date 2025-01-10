@@ -6,6 +6,27 @@ Add-WindowsDefenderExclusions
 # Enable firewall rules
 Enable-FirewallRules
 
+# Set tweaks
+# Start menu layout
+Write-Verbose -Message 'Importing Start menu and taskbar layout' -Verbose
+Import-StartLayout -LayoutPath 'w:\soft\ms_windows\LayoutModification.xml' -MountPath c:\
+Write-Verbose -Message 'OK' -Verbose
+
+# Enabling WinRM 
+Write-Verbose -Message 'Enabling  Windows remote management service' -Verbose
+winrm quickconfig -quiet
+Write-Verbose -Message 'OK' -Verbose
+
+# Powerconfigurations
+Write-Verbose -Message 'Setting monitor and standby timeouts' -Verbose
+powercfg /x monitor-timeout-ac 60
+powercfg /x standby-timeout-ac 0
+Write-Verbose -Message 'OK' -Verbose
+
+# Перезапустить explorer
+Stop-Process -ProcessName Explorer
+
+
 # Apply Edge policies
 Set-EdgePolicies -Scope "HKLM"
 
@@ -15,6 +36,9 @@ Update-AspiaHostConfig
 
 # Install 1C Thin Client
 Install-ThinClient1C
+
+# Install MS Office
+Install-MSOffice
 
 # Install Chrome, Zoom, FSViewer, etc using winget
 winget import 'w:\soft\winget\basic_import.json'
