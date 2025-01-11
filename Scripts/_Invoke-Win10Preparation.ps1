@@ -42,8 +42,10 @@ Install-MSOffice
 
 # Install Chrome, Zoom, FSViewer, etc using winget
 winget import 'w:\soft\winget\basic_import.json'
-Copy-Item 'w:\soft\_utils\winrar\rarreg.key' -destination 'c:\program files\winrar\'
 winget install sumatrapdf.sumatrapdf --accept-source-agreements --override "/install /s -with-preview -all-users"
+Expand-Archive 'W:\soft\_utils\totalcmd_arch\totalcmd.zip' -DestinationPath 'c:\'
+Copy-Item 'w:\soft\_utils\totalcmd\Total Commander.lnk' -Destination C:\Users\Public\Desktop
+Copy-Item 'w:\soft\_utils\winrar\rarreg.key' -destination 'c:\program files\winrar\'
 
 # Install ESET NOD32 Antivirus
 Install-NOD32
