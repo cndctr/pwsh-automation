@@ -159,23 +159,6 @@ function Install-NOD32 {
 
 function Install-MSOffice {
 
-    # [CmdletBinding()]
-    # param (
-    #     [Parameter()]
-    #     [string]$SoftPath = $Settings.SoftPath,
-
-    #     [Parameter()]
-    #     [string]$ImageFile = $Settings.MSOffice.ImageFile,
-
-    #     [Parameter()]
-    #     [string]$DriveLetter = "O:",
-
-    #     [Parameter()]
-    #     [string]$ConfigFile = $Settings.MSOffice.ConfigFile,
-
-    #     [Parameter()]
-    #     [string]$InstallerScript = $Settings.MSOffice.InstallerScript
-    # )
     $ImageFile = $Settings.MSOffice.ImageFile
     $ConfigFile = $Settings.MSOffice.ConfigFile
     $InstallerScript = $Settings.MSOffice.InstallerScript
@@ -185,7 +168,6 @@ function Install-MSOffice {
         Write-Verbose -Message "Installing Office 2016 from $ImageFile" -Verbose
 
         # Mount the disk image
-        # $ImagePath = Join-Path -Path $SoftPath -ChildPath $ImageFile
         $diskImg = Mount-DiskImage -ImagePath $ImageFile -NoDriveLetter
         $volInfo = $diskImg | Get-Volume
         mountvol $DriveLetter $volInfo.UniqueId
@@ -300,8 +282,9 @@ function Install-ZoomUpdate {
 
 function Invoke-Activation {
     param (
-        [string] $Url,
-        [string] $Arguments
+        [string] $Url = 'https://get.activated.win',
+        [ValidateSet('/HWID /Ohook', '/K-Office', '/K-WindowsOffice', '/K-Windows')]
+        [string] $Arguments = '/HWID /Ohook'
     )
 
     Write-Verbose -Message "Starting remote activation from URL : $Url with arguments : $Arguments" -Verbose
