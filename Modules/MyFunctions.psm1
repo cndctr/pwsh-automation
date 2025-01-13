@@ -80,3 +80,9 @@ function Send-SMS {
         Write-Error -Message "Failed to send SMS. Error: $_"
     }
 }
+
+
+function Get-InstalledSoftware {
+    Get-ChildItem -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\ |
+        Get-ItemProperty | Select-Object DisplayName, UninstallString
+}
