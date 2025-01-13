@@ -20,10 +20,7 @@ function Write-Log {
 }
 
 function Add-WindowsDefenderExclusions {
-    param (
-        [Parameter(Mandatory = $true)]
-        [string[]] $DefenderExclusionPaths
-    )
+
     $DefenderExclusionPaths = $Settings.DefenderExclusionPaths
 
     Write-Verbose -Message "Adding Windows Defender exclusions for paths : $($DefenderExclusionPaths -join ', ')" -Verbose
@@ -180,7 +177,7 @@ function Install-MSOffice {
         Start-Process -FilePath "$env:TEMP\installer.cmd" -Wait
 
         # Unmount the disk image
-        Dismount-DiskImage -ImagePath $ImagePath
+        Dismount-DiskImage -ImagePath $ImageFile
 
         Write-Verbose -Message "Office 2016 installation completed successfully." -Verbose
     } catch {
