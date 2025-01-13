@@ -31,5 +31,33 @@
         KeyDestinationPath = 'C:\Program Files\WinRAR\'
     }
     SumatraPDFArguments = '/install /s -with-preview -all-users'
-
+    UWPApps =@(
+        "Microsoft.549981C3F5F10",
+        "Microsoft.BingWeather",
+        "Microsoft.GetHelp",
+        "Microsoft.Getstarted",
+        "Microsoft.Microsoft3DViewer",
+        "Microsoft.MicrosoftOfficeHub",
+        "Microsoft.MicrosoftSolitaireCollection",
+        "Microsoft.MicrosoftStickyNotes",
+        "Microsoft.MixedReality.Portal",
+        "Microsoft.Office.OneNote",
+        "Microsoft.People",
+        "Microsoft.Wallet",
+        "Microsoft.SkypeApp",
+        "microsoft.windowscommunicationsapps",
+        "Microsoft.WindowsFeedbackHub",
+        "Microsoft.WindowsMaps",
+        "Microsoft.WindowsSoundRecorder",
+        "Microsoft.Windows.DevHome",
+        "Microsoft.Xbox.TCUI",
+        "Microsoft.XboxApp",
+        "Microsoft.XboxGameOverlay",
+        "Microsoft.XboxGamingOverlay",
+        "Microsoft.XboxIdentityProvider",
+        "Microsoft.XboxSpeechToTextOverlay",
+        "Microsoft.YourPhone",
+        "Microsoft.ZuneMusic",
+        "Microsoft.ZuneVideo"
+    )
 }

@@ -386,75 +386,59 @@ function Enable-FirewallRules {
     }
 }
 
-function Install-Office2016 {
-    <#
-    .SYNOPSIS
-    Installs Microsoft Office 2016.
-
-    .DESCRIPTION
-    This function mounts an Office 2016 disk image, configures installation settings, and runs the installer.
-
-    .PARAMETER ImagePath
-    The full path to the Office 2016 disk image.
-
-    .PARAMETER ConfigFilePath
-    The path to the Office configuration file.
-
-    .PARAMETER InstallerScriptPath
-    The path to the installer script.
-
-    .PARAMETER DriveLetter
-    The drive letter to mount the disk image.
-
-    .EXAMPLE
-    PS> Install-Office2016 -ImagePath "w:\soft\ms_office\Office2016.img" -ConfigFilePath "w:\soft\ms_office\Office2016_basic.ini" -InstallerScriptPath "w:\soft\ms_office\installer.cmd" -DriveLetter "O:"
-
-    Installs Office 2016 using the specified disk image and configuration.
-    #>
-    [CmdletBinding()]
+function Uninstall-UWPApps {
     param (
-        [Parameter(Mandatory)]
-        [string]$ImagePath,
-
-        [Parameter(Mandatory)]
-        [string]$ConfigFilePath,
-
-        [Parameter(Mandatory)]
-        [string]$InstallerScriptPath,
-
-        [Parameter(Mandatory)]
-        [string]$DriveLetter
+        [string[]]$UWPApps
     )
+    
+    $UWPApps = $Settings.UWPApps
 
-    Write-Verbose -Message "Installing Office 2016 from image: $ImagePath" -Verbose
+    Write-Verbose -Message "Removing UWP apps for all users"
 
-    try {
-        # Mount the disk image
-        $diskImg = Mount-DiskImage -ImagePath $ImagePath -NoDriveLetter -ErrorAction Stop
-        $volInfo = $diskImg | Get-Volume
-
-        # Assign the drive letter
-        mountvol $DriveLetter $volInfo.UniqueId
-        Write-Verbose -Message "Mounted $ImagePath to $DriveLetter" -Verbose
-
-        # Copy configuration files
-        $tempConfigPath = Join-Path -Path $env:TEMP -ChildPath 'C2R_Config.ini'
-        $tempInstallerPath = Join-Path -Path $env:TEMP -ChildPath 'installer.cmd'
-        Copy-Item -Path $ConfigFilePath -Destination $tempConfigPath -Force
-        Copy-Item -Path $InstallerScriptPath -Destination $tempInstallerPath -Force
-        Write-Verbose -Message "Copied configuration files to $env:TEMP" -Verbose
-
-        # Run the installer
-        Start-Process -FilePath $tempInstallerPath -Wait
-        Write-Verbose -Message "Installation process completed." -Verbose
-
-    } catch {
-        Write-Error -Message "An error occurred during the Office installation process: $_"
-    } finally {
-        # Dismount the disk image
-        Dismount-DiskImage -ImagePath $ImagePath -ErrorAction SilentlyContinue
-        Write-Verbose -Message "Dismounted image: $ImagePath" -Verbose
+    foreach ($UWPApp in $UWPApps) {
+        try {
+            Write-Verbose -Message "Removing : $UWPApp"
+            Get-AppxPackage -Name $UWPApp -AllUsers | Remove-AppxPackage -ErrorAction SilentlyContinue
+            Get-AppxProvisionedPackage -Online | Where-Object DisplayName -EQ $UWPApp | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue
+        }
+        catch {
+            Write-Error -Message "Failed to remove : $UWPApp"
+        }
     }
-
-    Write-Verbose -Message 'Office 2016 installation completed successfully.' -Verbose
 }
+
+# function Uninstall-UWPApps {
+#     param (
+#         [string[]]$UWPApps
+#     )
+    
+#     $UWPApps = $Settings.UWPApps
+#     Write-Verbose -Message "Removing UWP apps for all users"
+#     foreach ($UWPApp in $UWPApps) {
+#         try {
+#             Write-Verbose -Message "Checking : $UWPApp"
+            
+#             # Check if the app is installed for any user
+#             $appPackage = Get-AppxPackage -Name $UWPApp -AllUsers -ErrorAction SilentlyContinue
+#             $appProvisionedPackage = Get-AppxProvisionedPackage -Online | Where-Object DisplayName -EQ $UWPApp -ErrorAction SilentlyContinue
+            
+#             if (-not $appPackage -and -not $appProvisionedPackage) {
+#                 Write-Verbose -Message "App is not installed: $UWPApp"
+#                 continue
+#             }
+            
+#             Write-Verbose -Message "Removing : $UWPApp"
+            
+#             if ($appPackage) {
+#                 Remove-AppxPackage -Package $appPackage.PackageFullName -ErrorAction SilentlyContinue
+#             }
+            
+#             if ($appProvisionedPackage) {
+#                 Remove-AppxProvisionedPackage -Online -PackageName $appProvisionedPackage.PackageName -ErrorAction SilentlyContinue
+#             }
+#         }
+#         catch {
+#             Write-Error -Message "Failed to remove : $UWPApp"
+#         }
+#     }
+# }
