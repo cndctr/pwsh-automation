@@ -1,3 +1,4 @@
+
 Function Get-LoggedInuser {
 
     <#
@@ -90,3 +91,24 @@ Function Get-LoggedInuser {
           } 
        } 
     }
+
+
+    function Get-NewestADUsers {
+        param (
+            [Parameter(Mandatory = $true)]
+            [string[]]$OUList
+        )
+    
+        $allUsers = @()
+    
+        foreach ($OU in $OUList) {
+            $users = Get-ADUser -SearchBase $OU -Filter * -Properties WhenCreated, mail |
+                Select-Object Name, mail, WhenCreated
+    
+            $allUsers += $users
+        }
+    
+        # Display in Out-GridView (optional)
+        $allUsers | Sort-Object WhenCreated -Descending | Out-GridView
+    }
+    
