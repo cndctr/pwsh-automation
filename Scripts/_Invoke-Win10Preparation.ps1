@@ -26,6 +26,8 @@ Write-Verbose -Message 'OK' -Verbose
 # Перезапустить explorer
 Stop-Process -ProcessName Explorer
 
+# Set password policy for predefined administrator "adml"
+Set-LocalUser -Name adml -PasswordNeverExpires $true
 
 # Apply Edge policies
 Set-EdgePolicies -Scope "HKLM"
