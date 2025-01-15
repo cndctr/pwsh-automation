@@ -1,3 +1,4 @@
+$Settings = Import-PowerShellDataFile -Path "W:\scr\Config\ADSettings.psd1"
 
 Function Get-LoggedInuser {
 
@@ -94,16 +95,24 @@ Function Get-LoggedInuser {
 
 
     function Get-NewestADUsers {
+    <#
+       .EXAMPLE
+        Get-NewestADUsers -OUList $Settings.MainUsers -NumberOfNewest 4
+    #>
         param (
-            [Parameter(Mandatory = $true)]
-            [string[]]$OUList
+            [Parameter(Mandatory = $false)]
+            [string[]]$OUList = $Settings.MainUsers,
+
+            [Parameter(Mandatory = $false)]
+            [int]$NumberOfNewest = 5
         )
     
         $allUsers = @()
     
         foreach ($OU in $OUList) {
             $users = Get-ADUser -SearchBase $OU -Filter * -Properties WhenCreated, mail |
-                Select-Object Name, mail, WhenCreated
+                Sort-Object WhenCreated -Descending |
+                Select-Object -First $NumberOfNewest Name, mail, WhenCreated
     
             $allUsers += $users
         }
