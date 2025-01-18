@@ -5,7 +5,7 @@ function Export-1CBase {
     param (
         [string]$Server1CName,
         [string]$Base1CName,
-        [string]$PathTo1C,
+        [string]$PathTo1CExecutable,
         [string]$DTPath,
         [string]$DTFile
     )
@@ -26,7 +26,7 @@ function Export-1CBase {
     }
 
     Write-Host "Process started. The file is exporting to $DTPath\$DTFile" -ForegroundColor Green
-    $Process = Start-Process -FilePath "$PathTo1C\1cv8.exe" -ArgumentList $Arguments -ErrorAction Stop -Wait -PassThru
+    $Process = Start-Process -FilePath $PathTo1CExecutable -ArgumentList $Arguments -ErrorAction Stop -Wait -PassThru
     
     $ExportResult = $Process.ExitCode
     if ($ExportResult -eq 0) {
