@@ -14,7 +14,8 @@ function Write-Log {
 
     try {
         Add-Content -Path $LogFile -Value $LogMessage
-    } catch {
+    }
+    catch {
         Write-Error -Message "Failed to write to log file : $LogFile"
     }
 }
@@ -30,7 +31,8 @@ function Add-WindowsDefenderExclusions {
         try {
             Add-MpPreference -ExclusionPath $Path
             Write-Log -Message "Successfully added exclusion for : $Path"
-        } catch {
+        }
+        catch {
             $ErrorMessage = "Failed to add exclusion for : $Path. Error : $_"
             Write-Log -Message $ErrorMessage -Level Error
             Write-Error -Message $ErrorMessage
@@ -45,13 +47,14 @@ function Add-WindowsDefenderExclusions {
 function Install-AspiaHost {
     param (
         [string] $AspiaInstaller
-        )
+    )
 
-        $Is64Bit = [System.Environment]::Is64BitOperatingSystem
+    $Is64Bit = [System.Environment]::Is64BitOperatingSystem
     $AspiaInstaller = if ($Is64Bit) { 
         Write-Verbose -Message "64-bit OS detected. Installing x64 aspia-host." -Verbose
         $Settings.Aspia.X64InstallerPath 
-    } else {
+    }
+    else {
         Write-Verbose -Message "32-bit OS detected. Installing x86 aspia-host." -Verbose
         $Settings.Aspia.X86InstallerPath
     }
@@ -60,7 +63,8 @@ function Install-AspiaHost {
         Write-Log -Message "Starting Aspia host installation from : $AspiaInstaller"
         Start-Process msiexec -ArgumentList "/i `"$AspiaInstaller`" DESKTOP_SHORTCUT="""" /quiet" -Wait
         Write-Log -Message "Aspia host installation completed successfully for : $AspiaInstaller"
-    } else {
+    }
+    else {
         $ErrorMessage = "Installer not found at : $AspiaInstaller"
         Write-Log -Message $ErrorMessage -Level Error
         Write-Error -Message $ErrorMessage
@@ -72,7 +76,7 @@ function Update-AspiaHostConfig {
     param (
         [string] $ConfigSourcePath,
         [string] $ConfigDestinationPath
-        )
+    )
     $AspiaSettings = $Settings.Aspia
     $ConfigSourcePath = $AspiaSettings.ConfigSourcePath
     $ConfigDestinationPath = $AspiaSettings.ConfigDestinationPath
@@ -84,7 +88,8 @@ function Update-AspiaHostConfig {
         Copy-Item -Path $ConfigSourcePath -Destination $ConfigDestinationPath -Force
         Start-Service -Name 'aspia-host-service'
         Write-Log -Message "Aspia host configuration updated successfully from : $ConfigSourcePath"
-    } else {
+    }
+    else {
         $ErrorMessage = "Configuration file not found at : $ConfigSourcePath"
         Write-Log -Message $ErrorMessage -Level Error
         Write-Error -Message $ErrorMessage
@@ -124,7 +129,8 @@ function Install-ThinClient1C {
         Start-Process msiexec -ArgumentList "/i `"$ThinClient1C`" /passive" -Wait
         Write-Log -Message "Installation completed successfully for : $ThinClient1C"
         Write-Verbose -Message 'Installation completed successfully.' -Verbose
-    } else {
+    }
+    else {
         $ErrorMessage = "Installer not found at : $ThinClient1C"
         Write-Log -Message $ErrorMessage -Level Error
         Write-Error -Message $ErrorMessage
@@ -134,20 +140,21 @@ function Install-ThinClient1C {
 function Install-NOD32 {
     param (
         [string] $NOD32
-        )
+    )
         
-        # Variables
-        $NOD32 = $Settings.NOD32
+    # Variables
+    $NOD32 = $Settings.NOD32
         
-        Write-Verbose -Message "Installing software from : $NOD32" -Verbose
-        Write-Log -Message "Starting installation from : $NOD32"
+    Write-Verbose -Message "Installing software from : $NOD32" -Verbose
+    Write-Log -Message "Starting installation from : $NOD32"
         
-        if (Test-Path -Path $NOD32) {
+    if (Test-Path -Path $NOD32) {
         # Include the installer in the msiexec argument list
         Start-Process msiexec -ArgumentList "/i `"$NOD32`" /passive" -Wait
         Write-Log -Message "Installation completed successfully for : $NOD32"
         Write-Verbose -Message 'Installation completed successfully.' -Verbose
-    } else {
+    }
+    else {
         $ErrorMessage = "Installer not found at : $NOD32"
         Write-Log -Message $ErrorMessage -Level Error
         Write-Error -Message $ErrorMessage
@@ -180,7 +187,8 @@ function Install-MSOffice {
         Dismount-DiskImage -ImagePath $ImageFile
 
         Write-Verbose -Message "Office 2016 installation completed successfully." -Verbose
-    } catch {
+    }
+    catch {
         Write-Error -Message "Failed to install Office 2016. Error: $_"
     }
 }
@@ -211,12 +219,12 @@ function Get-ZoomVersion {
     param (
         [Parameter(Mandatory = $true, Position = 0, HelpMessage = "Specify the name of the target computer.")]
         [string]$ComputerName
-        )
+    )
         
-        # Check if the computer is reachable
-        if (-not (Test-Connection -ComputerName $ComputerName -Count 1 -Quiet -TimeoutSeconds 3)) {
-            return "Computer not reachable"
-        }
+    # Check if the computer is reachable
+    if (-not (Test-Connection -ComputerName $ComputerName -Count 1 -Quiet -TimeoutSeconds 3)) {
+        return "Computer not reachable"
+    }
 
     # Define the Zoom executable path
     $zoomPath = "C$\Program Files\Zoom\bin\Zoom.exe"
@@ -226,7 +234,8 @@ function Get-ZoomVersion {
         $zoomFile = Get-Item "\\$ComputerName\$zoomPath" -ErrorAction Stop
         $Version = $zoomFile.VersionInfo.ProductVersion -replace ",", "."
         return $Version
-    } catch {
+    }
+    catch {
         return "Zoom not found"
     }
 }
@@ -252,9 +261,9 @@ function Install-ZoomUpdate {
     param (
         [string]$ComputerName,
         [string]$ZoomInstallerUrl
-        )
+    )
         
-        $tempPath = "\\$ComputerName\C$\Temp"
+    $tempPath = "\\$ComputerName\C$\Temp"
     $installerPath = "$tempPath\ZoomInstaller.exe"
     
     try {
@@ -272,7 +281,8 @@ function Install-ZoomUpdate {
         }
         
         return "Upgrade successful"
-    } catch {
+    }
+    catch {
         return "Failed to upgrade: $_"
     }
 }
@@ -291,7 +301,8 @@ function Invoke-Activation {
         & ([ScriptBlock]::Create((Invoke-RestMethod -Uri $Url))) $Arguments
         Write-Log -Message "Successfully completed remote activation from : $Url"
         Write-Verbose -Message "Successfully completed remote activation"
-    } catch {
+    }
+    catch {
         $ErrorMessage = "Failed to complete remote activation from : $Url. Error : $_"
         Write-Log -Message $ErrorMessage -Level Error
         Write-Error -Message $ErrorMessage
@@ -306,21 +317,21 @@ function Set-EdgePolicies {
 
         [hashtable]$Policies = @{
             # Default policies
-            HideFirstRunExperience = 1
-            AutoImportAtFirstRun = 4
-            SyncDisabled = 1
-            BrowserSignin = 0
-            NewTabPageContentEnabled = 0
-            NewTabPageQuickLinksEnabled = 0
-            NewTabPageHideDefaultTopSites = 1
-            NewTabPageAllowedBackgroundTypes = 3
-            HubsSidebarEnabled = 0
-            PersonalizationReportingEnabled = 0
-            SearchSuggestEnabled = 0
+            HideFirstRunExperience                        = 1
+            AutoImportAtFirstRun                          = 4
+            SyncDisabled                                  = 1
+            BrowserSignin                                 = 0
+            NewTabPageContentEnabled                      = 0
+            NewTabPageQuickLinksEnabled                   = 0
+            NewTabPageHideDefaultTopSites                 = 1
+            NewTabPageAllowedBackgroundTypes              = 3
+            HubsSidebarEnabled                            = 0
+            PersonalizationReportingEnabled               = 0
+            SearchSuggestEnabled                          = 0
             SpotlightExperiencesAndRecommendationsEnabled = 0
-            ShowRecommendationsEnabled = 0
-            VisualSearchEnabled = 0
-            QuickSearchShowMiniMenu = 0
+            ShowRecommendationsEnabled                    = 0
+            VisualSearchEnabled                           = 0
+            QuickSearchShowMiniMenu                       = 0
         }
     )
 
@@ -347,13 +358,15 @@ function Set-EdgePolicies {
         if ($Scope -eq 'HKCU') {
             Write-Verbose -Message "Refreshing user group policy." -Verbose
             gpupdate /force /target:user | Out-Null
-        } else {
+        }
+        else {
             Write-Verbose -Message "Refreshing computer group policy." -Verbose
             gpupdate /force /target:computer | Out-Null
         }
 
         Write-Log -Message "Edge policies applied successfully for scope : $Scope"
-    } catch {
+    }
+    catch {
         $ErrorMessage = "Failed to apply Edge policies for scope : $Scope. Error : $_"
         Write-Log -Message $ErrorMessage -Level Error
         Write-Error -Message $ErrorMessage
@@ -381,17 +394,17 @@ function Enable-FirewallRules {
         Set-NetFirewallRule -Profile Any -Name FPS-SMB-In-TCP -Enabled True
 
         Write-Verbose -Message 'Firewall rules enabled successfully.' -Verbose
-    } catch {
+    }
+    catch {
         Write-Error -Message "Failed to enable firewall rules. Error: $_"
     }
 }
 
 function Uninstall-UWPApps {
+    [CmdletBinding()]
     param (
         [string[]]$UWPApps
     )
-    
-    $UWPApps = $Settings.UWPApps
 
     Write-Verbose -Message "Removing UWP apps for all users"
 
@@ -407,38 +420,3 @@ function Uninstall-UWPApps {
     }
 }
 
-# function Uninstall-UWPApps {
-#     param (
-#         [string[]]$UWPApps
-#     )
-    
-#     $UWPApps = $Settings.UWPApps
-#     Write-Verbose -Message "Removing UWP apps for all users"
-#     foreach ($UWPApp in $UWPApps) {
-#         try {
-#             Write-Verbose -Message "Checking : $UWPApp"
-            
-#             # Check if the app is installed for any user
-#             $appPackage = Get-AppxPackage -Name $UWPApp -AllUsers -ErrorAction SilentlyContinue
-#             $appProvisionedPackage = Get-AppxProvisionedPackage -Online | Where-Object DisplayName -EQ $UWPApp -ErrorAction SilentlyContinue
-            
-#             if (-not $appPackage -and -not $appProvisionedPackage) {
-#                 Write-Verbose -Message "App is not installed: $UWPApp"
-#                 continue
-#             }
-            
-#             Write-Verbose -Message "Removing : $UWPApp"
-            
-#             if ($appPackage) {
-#                 Remove-AppxPackage -Package $appPackage.PackageFullName -ErrorAction SilentlyContinue
-#             }
-            
-#             if ($appProvisionedPackage) {
-#                 Remove-AppxProvisionedPackage -Online -PackageName $appProvisionedPackage.PackageName -ErrorAction SilentlyContinue
-#             }
-#         }
-#         catch {
-#             Write-Error -Message "Failed to remove : $UWPApp"
-#         }
-#     }
-# }
