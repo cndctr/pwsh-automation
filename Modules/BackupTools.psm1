@@ -5,8 +5,8 @@ function Export-1CBase {
     param (
         [string]$Server1CName,
         [string]$Base1CName,
-        [string]$PathTo1CExecutable,
-        [string]$DTPath,
+        [string]$PathTo1CExecutable = "c:\Program Files\1cv8\common\1cestart.exe",
+        [string]$DTPath = ".",
         [string]$DTFile
     )
     <#
