@@ -40,6 +40,7 @@ function Export-1CBase {
 }
 
 function Invoke-WinSCPUpload {
+    [CmdletBinding()]
     param (
         [string]$WinSCPPath,
         [string]$WinSCPLog,

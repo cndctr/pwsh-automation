@@ -25,6 +25,7 @@ Export-1CBase -Server1CName $Settings.Server1CName `
                 -PathTo1C $Settings.PathTo1CExecutable `
                 -DTPath $Settings.DTPath `
                 -DTFile $DTFile
+                -ErrorAction Stop
 
 
 $FileToUpload = Join-Path -Path $Settings.DTPath -ChildPath $DTFile
