@@ -1,4 +1,5 @@
 Import-Module "w:\scr\Modules\InstallTools.psm1"
+$Settings = Import-PowerShellDataFile "W:\scr\Config\Settings.psd1"
 
 # Add Windows Defender exclusions
 Add-WindowsDefenderExclusions
@@ -37,10 +38,13 @@ Install-AspiaHost -Wait
 Update-AspiaHostConfig
 
 # Install 1C Thin Client
-Install-ThinClient1C
+Install-ThinClient1C -ThinClient1C $Settings.ThinClient1C
 
 # Install MS Office
-Install-MSOffice
+$ImageFile = $Settings.MSOffice.ImageFile
+$ConfigFile = $Settings.MSOffice.ConfigFile
+$InstallerScript = $Settings.MSOffice.InstallerScript
+Install-MSOffice -ImageFile $ImageFile -ConfigFile $ConfigFile -InstallerScript $InstallerScript 
 
 # Install Chrome, Zoom, FSViewer, etc using winget
 winget import 'w:\soft\winget\basic_import.json'
@@ -50,7 +54,7 @@ Copy-Item 'w:\soft\_utils\totalcmd\Total Commander.lnk' -Destination C:\Users\Pu
 Copy-Item 'w:\soft\_utils\winrar\rarreg.key' -destination 'c:\program files\winrar\'
 
 # Install ESET NOD32 Antivirus
-Install-NOD32
+Install-NOD32 -NODInstaller $Settings.NODInstaller
 
 # Activate Windows
 $ActivationUrl = 'https://get.activated.win'

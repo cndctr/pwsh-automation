@@ -7,7 +7,7 @@
     ChromeInstallerUrl = 'https://dl.google.com/dl/chrome/install/googlechromestandaloneenterprise64.msi'
     MinimumZoomVersion = '6.3.0'
     ThinClient1C = "w:\soft\1C\8.3.18.1563\x64\thinclient\1CEnterprise 8 Thin client (x86-64).msi"
-    NOD32 = "w:\soft\av\nod\_office\eavbe_nt64_rus_42713.msi"
+    NODInstaller = "w:\soft\av\nod\_office\eavbe_nt64_rus_42713.msi"
 	Aspia = @{
         X64InstallerPath = 'w:\soft\_utils\aspia\aspia-host-2.7.0-x86_64.msi'
         X86InstallerPath = 'w:\soft\_utils\aspia\aspia-host-2.7.0-x86.msi'

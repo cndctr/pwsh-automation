@@ -96,30 +96,11 @@ function Update-AspiaHostConfig {
     }
 }
 
-function Install-GoogleChrome {
-    param (
-        [string] $ChromeInstaller
-    )
-    
-    # Variables
-    $ChromeInstallerUrl = $Settings.ChromeInstallerUrl
-    
-    Write-Verbose -Message "Installing Google Chrome" -Verbose
-    Write-Log -Message "Starting Google Chrome installation"
-    
-    Start-Process msiexec -ArgumentList "/i `"$ChromeInstallerUrl`" /passive" -Wait
-    Write-Log -Message "Installation of Google Chrome completed successfully"
-    Write-Verbose -Message 'Installation completed successfully.' -Verbose
-
-}
-
 function Install-ThinClient1C {
+    [CmdletBinding()]
     param (
         [string] $ThinClient1C
     )
-    
-    # Variables
-    $ThinClient1C = $Settings.ThinClient1C
     
     Write-Verbose -Message "Installing software from : $ThinClient1C" -Verbose
     Write-Log -Message "Starting installation from : $ThinClient1C"
@@ -138,35 +119,35 @@ function Install-ThinClient1C {
 }
 
 function Install-NOD32 {
+    [CmdletBinding()]
     param (
-        [string] $NOD32
+        [string] $NODInstaller
     )
+       
+    Write-Verbose -Message "Installing software from : $NODInstaller" -Verbose
+    Write-Log -Message "Starting installation from : $NODInstaller"
         
-    # Variables
-    $NOD32 = $Settings.NOD32
-        
-    Write-Verbose -Message "Installing software from : $NOD32" -Verbose
-    Write-Log -Message "Starting installation from : $NOD32"
-        
-    if (Test-Path -Path $NOD32) {
+    if (Test-Path -Path $NODInstaller) {
         # Include the installer in the msiexec argument list
-        Start-Process msiexec -ArgumentList "/i `"$NOD32`" /passive" -Wait
-        Write-Log -Message "Installation completed successfully for : $NOD32"
+        Start-Process msiexec -ArgumentList "/i `"$NODInstaller`" /passive" -Wait
+        Write-Log -Message "Installation completed successfully for : $NODInstaller"
         Write-Verbose -Message 'Installation completed successfully.' -Verbose
     }
     else {
-        $ErrorMessage = "Installer not found at : $NOD32"
+        $ErrorMessage = "Installer not found at : $NODInstaller"
         Write-Log -Message $ErrorMessage -Level Error
         Write-Error -Message $ErrorMessage
     }
 }
 
 function Install-MSOffice {
-
-    $ImageFile = $Settings.MSOffice.ImageFile
-    $ConfigFile = $Settings.MSOffice.ConfigFile
-    $InstallerScript = $Settings.MSOffice.InstallerScript
-    $DriveLetter = "O:"
+    [CmdletBinding()]
+    param (
+        [string]$ImageFile,
+        [string]$ConfigFile,
+        [string]$InstallerScript,
+        [string]$DriveLetter = "O:"
+    )
 
     try {
         Write-Verbose -Message "Installing Office 2016 from $ImageFile" -Verbose
@@ -181,7 +162,7 @@ function Install-MSOffice {
         Copy-Item -Path $InstallerScript -Destination "$env:TEMP\installer.cmd" -Force
 
         # Start the installer
-        Start-Process -FilePath "$env:TEMP\installer.cmd" -Wait
+        Start-Process -FilePath "$env:TEMP\installer.cmd" -Wait -NoNewWindow
 
         # Unmount the disk image
         Dismount-DiskImage -ImagePath $ImageFile
