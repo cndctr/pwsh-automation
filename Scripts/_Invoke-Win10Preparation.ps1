@@ -2,7 +2,7 @@ Import-Module "w:\scr\Modules\InstallTools.psm1"
 $Settings = Import-PowerShellDataFile "W:\scr\Config\Settings.psd1"
 
 # Add Windows Defender exclusions
-Add-WindowsDefenderExclusions
+Add-WindowsDefenderExclusions -DefenderExclusionPaths $Settings.DefenderExclusionPaths
 
 # Enable firewall rules
 Enable-FirewallRules
@@ -34,8 +34,8 @@ Set-LocalUser -Name adml -PasswordNeverExpires $true
 Set-EdgePolicies -Scope "HKLM"
 
 # Install and configure Aspia Host
-Install-AspiaHost -Wait
-Update-AspiaHostConfig
+Install-AspiaHost -AspiaPaths $Settings.Aspia -Wait
+Update-AspiaHostConfig -ConfigSourcePath $Settings.Aspia.ConfigSourcePath -ConfigDestinationPath $Settings.Aspia.ConfigDestinationPath
 
 # Install 1C Thin Client
 Install-ThinClient1C -ThinClient1C $Settings.ThinClient1C

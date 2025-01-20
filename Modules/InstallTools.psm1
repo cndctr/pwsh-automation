@@ -21,8 +21,10 @@ function Write-Log {
 }
 
 function Add-WindowsDefenderExclusions {
-
-    $DefenderExclusionPaths = $Settings.DefenderExclusionPaths
+    [CmdletBinding()]
+    param (
+        [String[]]$DefenderExclusionPaths
+    )
 
     Write-Verbose -Message "Adding Windows Defender exclusions for paths : $($DefenderExclusionPaths -join ', ')" -Verbose
     Write-Log -Message "Starting to add Windows Defender exclusions."
@@ -43,20 +45,46 @@ function Add-WindowsDefenderExclusions {
     Write-Verbose -Message "Windows Defender exclusions added successfully." -Verbose
 }
 
+function Enable-FirewallRules {
+    [CmdletBinding()]
+    param (
+        [string[]]$RuleGroups
+    )
+
+    $FirewallRules = @(
+        # File and printer sharing
+        "@FirewallAPI.dll,-32752",
+        # Network discovery
+        "@FirewallAPI.dll,-28502"
+    )
+    Write-Verbose -Message "Enabling specified firewall rules and groups..." -Verbose
+
+    try {
+        # Enable specified rule groups
+        Set-NetFirewallRule -Group $FirewallRules -Profile Any -Enabled True
+        Set-NetFirewallRule -Profile Any -Name FPS-SMB-In-TCP -Enabled True
+
+        Write-Verbose -Message 'Firewall rules enabled successfully.' -Verbose
+    }
+    catch {
+        Write-Error -Message "Failed to enable firewall rules. Error: $_"
+    }
+}
 
 function Install-AspiaHost {
+    [CmdletBinding()]
     param (
-        [string] $AspiaInstaller
+        [hashtable]$AspiaPaths
     )
 
     $Is64Bit = [System.Environment]::Is64BitOperatingSystem
     $AspiaInstaller = if ($Is64Bit) { 
         Write-Verbose -Message "64-bit OS detected. Installing x64 aspia-host." -Verbose
-        $Settings.Aspia.X64InstallerPath 
+        $AspiaPaths.X64InstallerPath 
     }
     else {
         Write-Verbose -Message "32-bit OS detected. Installing x86 aspia-host." -Verbose
-        $Settings.Aspia.X86InstallerPath
+        $AspiaPaths.X86InstallerPath
     }
 
     if (Test-Path -Path $AspiaInstaller) {
@@ -71,15 +99,12 @@ function Install-AspiaHost {
     }
 }
 
-
 function Update-AspiaHostConfig {
+    [CmdletBinding()]
     param (
         [string] $ConfigSourcePath,
         [string] $ConfigDestinationPath
     )
-    $AspiaSettings = $Settings.Aspia
-    $ConfigSourcePath = $AspiaSettings.ConfigSourcePath
-    $ConfigDestinationPath = $AspiaSettings.ConfigDestinationPath
 
     Write-Verbose -Message "Configuring Aspia host with settings from : $ConfigSourcePath" -Verbose
 
@@ -174,9 +199,6 @@ function Install-MSOffice {
     }
 }
 
-
-
-
 function Get-ZoomVersion {
     <#
 	.SYNOPSIS
@@ -220,7 +242,6 @@ function Get-ZoomVersion {
         return "Zoom not found"
     }
 }
-
 
 function Install-ZoomUpdate {
     <#
@@ -351,33 +372,6 @@ function Set-EdgePolicies {
         $ErrorMessage = "Failed to apply Edge policies for scope : $Scope. Error : $_"
         Write-Log -Message $ErrorMessage -Level Error
         Write-Error -Message $ErrorMessage
-    }
-}
-
-
-function Enable-FirewallRules {
-    [CmdletBinding()]
-    param (
-        [string[]]$RuleGroups
-    )
-
-    $FirewallRules = @(
-        # File and printer sharing
-        "@FirewallAPI.dll,-32752",
-        # Network discovery
-        "@FirewallAPI.dll,-28502"
-    )
-    Write-Verbose -Message "Enabling specified firewall rules and groups..." -Verbose
-
-    try {
-        # Enable specified rule groups
-        Set-NetFirewallRule -Group $FirewallRules -Profile Any -Enabled True
-        Set-NetFirewallRule -Profile Any -Name FPS-SMB-In-TCP -Enabled True
-
-        Write-Verbose -Message 'Firewall rules enabled successfully.' -Verbose
-    }
-    catch {
-        Write-Error -Message "Failed to enable firewall rules. Error: $_"
     }
 }
 

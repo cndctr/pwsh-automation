@@ -1,7 +1,6 @@
 Import-Module "w:\scr\Modules\InstallTools.psm1"
+$Settings = Import-PowerShellDataFile "W:\scr\Config\Settings.psd1"
 
 # Install Aspia Host
-Write-Log -Message "Starting the Aspia Host installation process."
-Install-AspiaHost -Wait
-Update-AspiaHostConfig
-Write-Log -Message "Aspia Host installation process completed."
+Install-AspiaHost -AspiaPaths $Settings.Aspia -Wait
+Update-AspiaHostConfig -ConfigSourcePath $Settings.Aspia.ConfigSourcePath -ConfigDestinationPath $Settings.Aspia.ConfigDestinationPath
