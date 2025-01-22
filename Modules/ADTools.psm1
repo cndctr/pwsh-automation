@@ -1,4 +1,4 @@
-$Settings = Import-PowerShellDataFile -Path "W:\scr\Config\ADSettings.psd1"
+# $Settings = Import-PowerShellDataFile -Path "W:\scr\Config\ADSettings.psd1"
 
 Function Get-LoggedInuser {
 
@@ -60,64 +60,82 @@ Function Get-LoggedInuser {
     #>
     
     [cmdletbinding()]
-       param(
-       [String[]]$Computer = $env:COMPUTERNAME
-       )
+    param(
+        [String[]]$Computer = $env:COMPUTERNAME
+    )
     
-       ForEach ($Comp in $Computer) 
-       { 
-       If (-not (Test-Connection -ComputerName $comp -Quiet -Count 1 -ea silentlycontinue)) 
-       {
-       Write-Warning "$comp is Offline"; continue 
-       } 
-       $stringOutput = quser /server:$Comp 2>$null
-          If (!$stringOutput)
-          {
-          Write-Warning "Unable to retrieve quser info for `"$Comp`""
-          }
-          ForEach ($line in $stringOutput){
-             If ($line -match "logon time") 
-             {Continue}
-    
-             [PSCustomObject]@{
-              ComputerName    = $Comp
-              Username        = $line.SubString(1, 20).Trim()
-              SessionName     = $line.SubString(23, 17).Trim()
-              ID             = $line.SubString(42, 2).Trim()
-              State           = $line.SubString(46, 6).Trim()
-              #Idle           = $line.SubString(54, 9).Trim().Replace('+', '.')
-              #LogonTime      = [datetime]$line.SubString(65)
-              }
-              
-          } 
-       } 
-    }
-
-
-    function Get-NewestADUsers {
-    <#
-       .EXAMPLE
-        Get-NewestADUsers -OUList $Settings.MainUsers -NumberOfNewest 4
-    #>
-        param (
-            [Parameter(Mandatory = $false)]
-            [string[]]$OUList = $Settings.MainUsers,
-
-            [Parameter(Mandatory = $false)]
-            [int]$NumberOfNewest = 5
-        )
-    
-        $allUsers = @()
-    
-        foreach ($OU in $OUList) {
-            $users = Get-ADUser -SearchBase $OU -Filter * -Properties WhenCreated, mail |
-                Sort-Object WhenCreated -Descending |
-                Select-Object -First $NumberOfNewest Name, mail, WhenCreated
-    
-            $allUsers += $users
+    ForEach ($Comp in $Computer) { 
+        If (-not (Test-Connection -ComputerName $comp -Quiet -Count 1 -ea silentlycontinue)) {
+            Write-Warning "$comp is Offline"; continue 
+        } 
+        $stringOutput = quser /server:$Comp 2>$null
+        If (!$stringOutput) {
+            Write-Warning "Unable to retrieve quser info for `"$Comp`""
         }
+        ForEach ($line in $stringOutput) {
+            If ($line -match "logon time") 
+            { Continue }
     
-        # Display in Out-GridView (optional)
-        $allUsers | Sort-Object WhenCreated -Descending | Out-GridView
+            [PSCustomObject]@{
+                ComputerName = $Comp
+                Username     = $line.SubString(1, 20).Trim()
+                SessionName  = $line.SubString(23, 17).Trim()
+                ID           = $line.SubString(42, 2).Trim()
+                State        = $line.SubString(46, 6).Trim()
+                #Idle           = $line.SubString(54, 9).Trim().Replace('+', '.')
+                #LogonTime      = [datetime]$line.SubString(65)
+            }
+              
+        } 
+    } 
+}
+
+
+function Get-NewestADUsers {
+    <#
+    .EXAMPLE
+    Get-NewestADUsers -OUList $Settings.MainUsers -NumberOfNewest 4
+#>
+    param (
+        [Parameter(Mandatory = $false)]
+        [string[]]$OUList = $Settings.MainUsers,
+
+        [Parameter(Mandatory = $false)]
+        [int]$NumberOfNewest = 5
+    )
+
+    $allUsers = @()
+
+    foreach ($OU in $OUList) {
+        $users = Get-ADUser -SearchBase $OU -Filter * -Properties WhenCreated, mail |
+        Sort-Object WhenCreated -Descending |
+        Select-Object -First $NumberOfNewest Name, mail, WhenCreated
+
+        $allUsers += $users
     }
+
+    # Display in Out-GridView (optional)
+    $allUsers | Sort-Object WhenCreated -Descending | Out-GridView
+}
+
+function Enable-ADComputerRDP {
+    [CmdletBinding()]
+    param (
+        [string]$ComputerName
+    )
     
+    try {
+        Write-Host "Enabling RDP on: $ComputerName"
+        # Allow RDP connections
+        Invoke-Command -ComputerName $ComputerName `
+            -ScriptBlock { Set-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Terminal Server" -Name "fDenyTSConnections" -Value 0 }
+        # Allow incoming RDP traffic in firewall
+        Invoke-Command -ComputerName $ComputerName `
+            -ScriptBlock { Enable-NetFirewallRule -Group "@FirewallAPI.dll,-28752" }
+        Write-Host "RDP successfully enabled!" -ForegroundColor Green
+    }
+    catch {
+        Write-Host "Operation failed!" -ForegroundColor Red
+    }
+
+}
