@@ -1,6 +1,3 @@
-$Settings = Import-PowerShellDataFile -Path "W:\scr\Config\Settings.psd1"
-$ScriptRoot = $Settings.ScriptRoot
-
 function Write-Log {
     param (
         [string] $Message,
@@ -10,7 +7,7 @@ function Write-Log {
 
     $Timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
     $LogMessage = "[$Timestamp] [$Level] $Message"
-    $LogFile = "$ScriptRoot\Logs\ExecutionLog.txt"
+    $LogFile = "w:\scr\Logs\ExecutionLog.txt"
 
     try {
         Add-Content -Path $LogFile -Value $LogMessage
