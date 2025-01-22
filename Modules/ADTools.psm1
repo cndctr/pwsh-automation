@@ -98,10 +98,10 @@ function Get-NewestADUsers {
 #>
     param (
         [Parameter(Mandatory = $false)]
-        [string[]]$OUList = $Settings.MainUsers,
+        [string[]]$OUList,
 
         [Parameter(Mandatory = $false)]
-        [int]$NumberOfNewest = 5
+        [int]$NumberOfNewest
     )
 
     $allUsers = @()
