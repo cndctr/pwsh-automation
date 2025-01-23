@@ -64,7 +64,7 @@ function Send-SMS {
         channels        = @("sms")
         channel_options = @{
             sms = @{
-                text      = $SmsText
+                text       = $SmsText
                 alpha_name = $AlphaName
                 ttl        = $TTL
             }
@@ -76,7 +76,8 @@ function Send-SMS {
         $response = Invoke-WebRequest -Uri $uri -Method POST -Headers $headers -Body $body
         Write-Verbose -Message "SMS sent successfully. Response: $($response.Content)" -Verbose
         return $response.Content
-    } catch {
+    }
+    catch {
         Write-Error -Message "Failed to send SMS. Error: $_"
     }
 }
@@ -84,5 +85,17 @@ function Send-SMS {
 
 function Get-InstalledSoftware {
     Get-ChildItem -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\ |
-        Get-ItemProperty | Select-Object DisplayName, UninstallString
+    Get-ItemProperty | Select-Object DisplayName, UninstallString
+}
+
+function Export-PhonebookToCSV {
+    param (
+        [string]$PhonebookUri="http://10.41.41.3/tftpboot/phonebook/yealink.php",
+        
+        [Parameter(Mandatory)]
+        [string]$OutputPath
+    )
+    
+    [xml]$res = (Invoke-WebRequest $PhonebookUri).Content
+    $res.YealinkIPPhoneBook.Menu.Unit | Export-Csv $OutputPath"\phonebook.csv" -Delimiter ";" -Encoding 1251
 }
