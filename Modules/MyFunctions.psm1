@@ -159,7 +159,7 @@ function Clear-1CCache {
     if ($Force) {
         Write-Host "Running in deletion mode..." -ForegroundColor Red
     } else {
-        Write-Host "Running in dry-run mode. No folders will be deleted." -ForegroundColor Yellow
+        Write-Host "Running in dry-run mode. No folders will be deleted. Use -Force argument to delete files" -ForegroundColor Yellow
     }
 
     # Process each path
