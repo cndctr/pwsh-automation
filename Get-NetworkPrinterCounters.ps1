@@ -1,8 +1,7 @@
 Set-Location "W:\scr"
 # Define input and output files
-$InputCsv = ".\config\printers.csv"  # Change if needed
-$OutputCsv = ".\logs\counters.csv"
-$PageCountOID = "1.3.6.1.2.1.43.10.2.1.4.1.1" # Total pages count
+$InputCsv = "./config/printers.csv"  # Change if needed
+$OutputCsv = "./logs/counters.csv"
 $SerialNumberOID = "1.3.6.1.2.1.43.5.1.1.17.1" # Serial number
 $ModelNameOID = "1.3.6.1.2.1.25.3.2.1.3.1" # Model name
 $Community = "public"  # Change if needed
@@ -24,6 +23,7 @@ $Timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
 foreach ($Printer in $Printers) {
     $IP = $Printer.IP
     $PrinterName = $Printer.PrinterName
+    $PageCountOID = $Printer.TotalPagesOID  # Read OID from CSV
     
     Write-Host "Querying SNMP for $PrinterName ($IP)"
     
