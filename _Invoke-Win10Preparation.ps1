@@ -33,6 +33,9 @@ Set-LocalUser -Name adml -PasswordNeverExpires $true
 # Apply Edge policies
 Set-EdgePolicies -Scope "HKLM"
 
+#Disable Bing Search in Start Menu
+Set-BingSearch -Disable
+
 # Install and configure Aspia Host
 Install-AspiaHost -AspiaPaths $Settings.Aspia -Wait
 Update-AspiaHostConfig -ConfigSourcePath $Settings.Aspia.ConfigSourcePath -ConfigDestinationPath $Settings.Aspia.ConfigDestinationPath
