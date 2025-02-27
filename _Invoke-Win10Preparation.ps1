@@ -60,6 +60,8 @@ Copy-Item 'w:\soft\_utils\winrar\rarreg.key' -destination 'c:\program files\winr
 Install-NOD32 -NODInstaller $Settings.NODInstaller
 
 # Activate Windows
-$ActivationUrl = 'https://get.activated.win'
-$ActivationArguments = '/HWID /Ohook' # Permanent Activation of Windows and Office
-Invoke-Activation -Url $ActivationUrl -Arguments $ActivationArguments
+
+W:\soft\ms_windows\mas\MAS_AIO.cmd /Z-WindowsESUOffice
+# $ActivationUrl = 'https://get.activated.win'
+# $ActivationArguments = '/HWID /Ohook' # Permanent Activation of Windows and Office
+# Invoke-Activation -Url $ActivationUrl -Arguments $ActivationArguments

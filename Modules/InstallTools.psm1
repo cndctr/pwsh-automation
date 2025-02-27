@@ -289,8 +289,8 @@ function Install-ZoomUpdate {
 function Invoke-Activation {
     param (
         [string] $Url = 'https://get.activated.win',
-        [ValidateSet('/HWID /Ohook', '/K-Office', '/K-WindowsOffice', '/K-Windows')]
-        [string] $Arguments = '/HWID /Ohook'
+        [ValidateSet('/Z-WindowsESUOffice', '/HWID /Ohook', '/K-Office', '/K-WindowsOffice', '/K-Windows')]
+        [string] $Arguments = '/Z-WindowsESUOffice'
     )
 
     Write-Verbose -Message "Starting remote activation from URL : $Url with arguments : $Arguments" -Verbose
