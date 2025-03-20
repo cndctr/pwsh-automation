@@ -23,15 +23,16 @@ $Timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
 foreach ($Printer in $Printers) {
     $IP = $Printer.IP
     $PrinterName = $Printer.PrinterName
-    $PageCountOID = $Printer.TotalPagesOID  # Read OID from CSV
+    $PageCountOID = $Printer.TotalPagesOID
+    $SNMPVer = $Printer.SNMPVer  # Read OID from CSV
     
     Write-Host "Querying SNMP for $PrinterName ($IP)"
     
     try {
         # Fetch SNMP data
-        $PageCount = (Get-SNMPData -Community $Community -IP $IP -OID $PageCountOID).Data
-        $SerialNumber = (Get-SNMPData -Community $Community -IP $IP -OID $SerialNumberOID).Data
-        $ModelName = (Get-SNMPData -Community $Community -IP $IP -OID $ModelNameOID).Data
+        $PageCount = (Get-SNMPData -Community $Community -IP $IP -OID $PageCountOID -Version $SNMPVer).Data
+        $SerialNumber = (Get-SNMPData -Community $Community -IP $IP -OID $SerialNumberOID -Version $SNMPVer).Data
+        $ModelName = (Get-SNMPData -Community $Community -IP $IP -OID $ModelNameOID -Version $SNMPVer).Data
         
         # Store result
         $Results += [PSCustomObject]@{

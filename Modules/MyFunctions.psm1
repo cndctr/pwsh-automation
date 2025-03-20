@@ -180,3 +180,28 @@ function Clear-1CCache {
 
 # Export the function to make it available when the module is imported
 Export-ModuleMember -Function Clear-1CCache
+
+
+# 
+function Test-PCNameFor1C {
+    <#
+    .DESCRIPTION
+    This function checks whether PC name is "Good" or "Bad" for 1C.
+    Algorithm described here: https://forum.infostart.ru/forum86/topic250832/
+    #>
+    param (
+        [Parameter(Mandatory = $true)]
+        [string]$pcName
+    )
+    $ar = ($pcName | Format-Hex).Bytes
+    $b = 0
+    foreach ($a in $ar) {
+        $b += $a % 2
+    }
+    if ($b % 2 -eq 0) {
+        Write-Host "Checksum is: $b and it is BAD!"
+    } 
+    else {
+        Write-Host "Checksum is: $b and it is GOOD!"
+    }
+}
