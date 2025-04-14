@@ -178,9 +178,6 @@ function Clear-1CCache {
     }
 }
 
-# Export the function to make it available when the module is imported
-Export-ModuleMember -Function Clear-1CCache
-
 
 # 
 function Test-PCNameFor1C {

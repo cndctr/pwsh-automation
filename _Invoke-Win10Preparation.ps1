@@ -37,7 +37,7 @@ Set-EdgePolicies -Scope "HKLM"
 Set-BingSearch -Disable
 
 # Install and configure Aspia Host
-Install-AspiaHost -AspiaPaths $Settings.Aspia -Wait
+Install-AspiaHost -AspiaPaths $Settings.Aspia
 Update-AspiaHostConfig -ConfigSourcePath $Settings.Aspia.ConfigSourcePath -ConfigDestinationPath $Settings.Aspia.ConfigDestinationPath
 
 # Install 1C Thin Client
