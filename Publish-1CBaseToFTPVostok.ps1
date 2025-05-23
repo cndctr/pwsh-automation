@@ -1,6 +1,6 @@
 
-Import-Module W:\scr\Modules\BackupTools.psm1 -Force
-$Settings = Import-PowerShellDataFile W:\scr\Config\BackupSettings.psd1
+Import-Module "$PSScriptRoot\Modules\BackupTools.psm1" -Force
+$Settings = Import-PowerShellDataFile "$PSScriptRoot\Config\BackupSettings.psd1"
 
 # $FileToRestore = Get-ChildItem -Path $Settings.SQLBackupFolder | Sort-Object -Descending | Select-Object -First 1
 # try {

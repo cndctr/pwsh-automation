@@ -1,5 +1,5 @@
-Import-Module "w:\scr\Modules\InstallTools.psm1" -Force
-$Settings = Import-PowerShellDataFile "W:\scr\Config\Settings.psd1"
+Import-Module "$PSScriptRoot\Modules\InstallTools.psm1" -Force
+$Settings = Import-PowerShellDataFile "$PSScriptRoot\Config\Settings.psd1"
 
 $ImageFile = $Settings.MSOffice.ImageFile
 $ConfigFile = $Settings.MSOffice.ConfigFile

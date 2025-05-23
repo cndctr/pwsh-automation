@@ -1,5 +1,5 @@
-Import-Module "w:\scr\Modules\InstallTools.psm1"
-$Settings = Import-PowerShellDataFile "W:\scr\Config\Settings.psd1"
+Import-Module "$PSScriptRoot\Modules\InstallTools.psm1"
+$Settings = Import-PowerShellDataFile "$PSScriptRoot\Config\Settings.psd1"
 
 # Install 1C Thin Client
 Write-Log -Message "Starting the 1C Thin Client installation process."

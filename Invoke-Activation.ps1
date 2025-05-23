@@ -1,4 +1,4 @@
-Import-Module "w:\scr\Modules\InstallTools.psm1"
+Import-Module "$PSScriptRoot\Modules\InstallTools.psm1"
 # Variables
 $ActivationUrl = 'https://get.activated.win'
 $ActivationArguments = '/Z-WindowsESUOffice' # Activate all Windows / ESU / Office with TSforge

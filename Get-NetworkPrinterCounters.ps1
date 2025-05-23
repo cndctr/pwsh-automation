@@ -1,7 +1,7 @@
-Set-Location "W:\scr"
+# Set-Location "W:\scr"
 # Define input and output files
-$InputCsv = "./config/printers.csv"  # Change if needed
-$OutputCsv = "./logs/counters.csv"
+$InputCsv = "$PSScriptRoot\config\printers.csv"  # Change if needed
+$OutputCsv = "$PSScriptRoot\logs\counters.csv"
 $SerialNumberOID = "1.3.6.1.2.1.43.5.1.1.17.1" # Serial number
 $ModelNameOID = "1.3.6.1.2.1.25.3.2.1.3.1" # Model name
 $Community = "public"  # Change if needed

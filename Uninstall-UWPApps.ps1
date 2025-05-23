@@ -1,5 +1,5 @@
-Import-Module "w:\scr\Modules\InstallTools.psm1"
-$Settings = Import-PowerShellDataFile -Path "W:\scr\Config\Settings.psd1"
+Import-Module "$PSScriptRoot\Modules\InstallTools.psm1"
+$Settings = Import-PowerShellDataFile -Path "$PSScriptRoot\Config\Settings.psd1"
 
 
 # Uninstalling UWP Apps

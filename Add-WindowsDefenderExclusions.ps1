@@ -1,4 +1,4 @@
-Import-Module "w:\scr\Modules\InstallTools.psm1"
-$Settings = Import-PowerShellDataFile "W:\scr\Config\Settings.psd1"
+Import-Module "$PSScriptRoot\Modules\InstallTools.psm1"
+$Settings = Import-PowerShellDataFile "$PSScriptRoot\Config\Settings.psd1"
 
 Add-WindowsDefenderExclusions -DefenderExclusionPaths $Settings.DefenderExclusionPaths
